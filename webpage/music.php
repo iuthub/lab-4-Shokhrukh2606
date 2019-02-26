@@ -14,32 +14,31 @@
 		</div>
 		<div id="listarea">
 			<ul id="musiclist">
-			<?php 
-$dir='songs/';
-$files=glob($dir."*.mp3");
-$playlists=glob($dir."*.txt");
-$playlist_query=isset($_REQUEST["playlist"])?$_REQUEST['playlist']:'';
+			 <?php 
+			if(isset($_REQUEST["playlist"])){ ?>
+            <?php 
+			 $playlist = $_REQUEST["playlist"];
+			foreach(file('songs/' . $playlist) as $line) {?>
+            <li class="mp3item">
+                <a href="songs/<?= $line ?>"><?= $line ?></a>
+            </li>
+            <?php } ?>
+            <?php } else {?>
 
+            <?php 
+			 foreach (glob("songs/*.mp3") as $filename) { ?>
+            <li class="mp3item">
+                <a href="<?= $filename ?>"><?= basename($filename) ?></a>
+                (<?= precised_file_size(filesize($filename)); ?>)
+            </li>
+            <?php } ?>
 
-if(!empty($playlist_query)){
- $lines = file($dir.$playlist_query);
-   foreach ($lines as $line) {
-      print "<li class='mp3item'><a href='$dir$line'>$line</a></li>";
-   }
-}else{
-foreach($files as $file){
-$basename_of_file=basename($file);
-$file_size=precised_file_size(filesize($file));
-
-print "<li class='mp3item'><a href='$file'>$basename_of_file</a>({$file_size})</li>";
-}
-
-foreach($playlists as $playlist)    {
-$basename_of_playlist=basename($playlist);
-print "<li class='playlistitem'><a href='$playlist'>$basename_of_playlist</a></li>";
-}
-}
-?>
+            <?php foreach (glob("songs/*.txt") as $filename) { ?>
+            <li class="playlistitem">
+                <a href="music.php?playlist=<?= basename($filename) ?>"><?= basename($filename) ?></a>
+                (<?= precised_file_size(filesize($filename)); ?>) 
+            </li>
+            <?php } }?>
 			</ul>
 		</div>
 	</body>
